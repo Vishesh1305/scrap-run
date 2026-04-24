@@ -11,9 +11,6 @@ Demonstrates C++ templates and STL containers:
 - `Container<T, MaxSize>` — fixed-capacity inventory with non-type template parameter
 - `InventoryManager` — multi-category storage using `std::map` and STL algorithms
 
-Course: VGP134 — Object-Oriented Programming in C++ II
-Institution: LaSalle College Vancouver
-
 ## Controls
 
 | Key | Action |
@@ -37,3 +34,6 @@ Institution: LaSalle College Vancouver
 
 - Sprites: [Kenney Tiny Dungeon](https://kenney.nl/assets/tiny-dungeon) (CC0)
 - Engine: [raylib](https://www.raylib.com/)
+---
+
+Made by Vishesh.
