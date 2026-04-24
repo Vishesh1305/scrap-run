@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+*.sln     text eol=crlf
+*.vcxproj text eol=crlf
+*.filters text eol=crlf
+
+*.png binary
+*.jpg binary
+*.wav binary
+*.ogg binary
+*.ttf binary

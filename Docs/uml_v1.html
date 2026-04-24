@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrap Run — UML v1</title>
+<style>
+  :root {
+    --bg: #1a1612;
+    --panel: #262017;
+    --panel-2: #2f2820;
+    --border: #4a4036;
+    --text: #eaa56c;
+    --text-dim: #c08960;
+    --text-soft: #a0795a;
+    --accent: #f7c282;
+    --warn: #e84537;
+    --ok: #25956a;
+    --steel: #c0cbdc;
+    --purple: #a99ce0;
+    --teal: #7ad0a8;
+    --coral: #f0997b;
+    --blue: #85b7eb;
+    --amber: #f5c45a;
+    --gray-cls: #888780;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  header {
+    max-width: 1280px;
+    margin: 0 auto 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .legend {
+    max-width: 1280px;
+    margin: 0 auto 20px;
+    padding: 14px 18px;
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .legend strong { color: var(--text); }
+  .legend code {
+    background: var(--panel-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+    font-family: Consolas, monospace;
+  }
+  .grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .full {
+    grid-column: 1 / -1;
+  }
+  .cls {
+    background: var(--panel);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .cls.stub {
+    border-style: dashed;
+    border-color: var(--coral);
+    opacity: 0.92;
+  }
+  .cls-head {
+    padding: 12px 16px 10px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .cls-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0;
+    font-family: Consolas, monospace;
+  }
+  .cls-tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 3px;
+    vertical-align: middle;
+  }
+  .tag-purple { background: rgba(169,156,224,0.15); color: var(--purple); }
+  .tag-teal   { background: rgba(122,208,168,0.15); color: var(--teal); }
+  .tag-blue   { background: rgba(133,183,235,0.15); color: var(--blue); }
+  .tag-amber  { background: rgba(245,196,90,0.15);  color: var(--amber); }
+  .tag-coral  { background: rgba(240,153,123,0.18); color: var(--coral); }
+  .tag-gray   { background: rgba(136,135,128,0.18); color: var(--gray-cls); }
+  .cls-sub {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--text-soft);
+    font-style: italic;
+  }
+  .section {
+    padding: 10px 16px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+  .section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-soft);
+    margin: 0 0 6px;
+  }
+  ul.members {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+  }
+  ul.members li {
+    padding: 3px 0 3px 14px;
+    position: relative;
+    color: var(--text);
+  }
+  ul.members li::before {
+    position: absolute;
+    left: 0;
+    color: var(--text-soft);
+  }
+  ul.members li.priv::before { content: "−"; color: var(--warn); }
+  ul.members li.pub::before  { content: "+"; color: var(--ok); }
+  ul.members li.note {
+    padding-left: 0;
+    color: var(--text-soft);
+    font-style: italic;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12px;
+  }
+  ul.members li .type { color: var(--steel); }
+  ul.members li .ret  { color: var(--text-dim); }
+  ul.members li .kw   { color: var(--accent); font-weight: 600; }
+  ul.members li .stub-marker {
+    color: var(--coral);
+    background: rgba(240,153,123,0.12);
+    padding: 0 6px;
+    border-radius: 3px;
+    margin-left: 4px;
+    font-style: italic;
+  }
+  .relationships {
+    max-width: 1280px;
+    margin: 24px auto 0;
+    padding: 18px 22px;
+    background: var(--panel);
+    border-radius: 6px;
+    border-left: 3px solid var(--steel);
+  }
+  .relationships h2 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: var(--accent);
+  }
+  .relationships ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .relationships li { margin: 6px 0; }
+  .relationships code {
+    background: var(--panel-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    font-size: 12px;
+  }
+  .blocked {
+    max-width: 1280px;
+    margin: 20px auto 0;
+    padding: 14px 18px;
+    background: rgba(232,69,55,0.08);
+    border-left: 3px solid var(--warn);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .blocked strong { color: var(--warn); }
+  footer {
+    max-width: 1280px;
+    margin: 32px auto 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-soft);
+    font-size: 12px;
+    text-align: center;
+  }
+  @media (max-width: 760px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Scrap Run — UML v1</h1>
+  <div class="subtitle">Class diagram | VGP134 Assignment 1 | Pending instructor reply on heterogeneity question</div>
+</header>
+
+<div class="legend">
+  <strong>Legend:</strong>
+  Solid border = designed and locked &nbsp;|&nbsp;
+  Dashed coral border = stub / TBD &nbsp;|&nbsp;
+  <code>+</code> public &nbsp;
+  <code>−</code> private &nbsp;|&nbsp;
+  <span style="color: var(--coral);">???</span> = depends on heterogeneity decision
+</div>
+
+<div class="grid">
+
+  <!-- Item<T> -->
+  <div class="cls">
+    <div class="cls-head">
+      <h2 class="cls-name">Item&lt;T&gt; <span class="cls-tag tag-purple">Template</span></h2>
+      <p class="cls-sub">Generic item with one type-parameterized special-data field</p>
+    </div>
+    <div class="section">
+      <p class="section-title">Members</p>
+      <ul class="members">
+        <li class="priv">m_name : <span class="type">std::string</span></li>
+        <li class="priv">m_description : <span class="type">std::string</span></li>
+        <li class="priv">m_value : <span class="type">int</span></li>
+        <li class="priv">m_weight : <span class="type">float</span></li>
+        <li class="priv">m_data : <span class="type">T</span></li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Methods</p>
+      <ul class="members">
+        <li class="pub">Item(name, description, value, weight, data)</li>
+        <li class="pub">GetName() <span class="kw">const</span> : <span class="ret">const std::string&amp;</span></li>
+        <li class="pub">GetDescription() <span class="kw">const</span> : <span class="ret">const std::string&amp;</span></li>
+        <li class="pub">GetValue() <span class="kw">const</span> : <span class="ret">int</span></li>
+        <li class="pub">GetWeight() <span class="kw">const</span> : <span class="ret">float</span></li>
+        <li class="pub">GetData() <span class="kw">const</span> : <span class="ret">const T&amp;</span></li>
+        <li class="pub">Display() <span class="kw">const</span> : <span class="ret">std::string</span></li>
+        <li class="note">No default constructor — items must be fully specified</li>
+        <li class="note">All template definitions live in Item.h</li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Instantiations (locked)</p>
+      <ul class="members">
+        <li class="note"><span class="type">Item&lt;std::string&gt;</span> — Weapon (damage type: "blunt", "piercing", "fire")</li>
+        <li class="note"><span class="type">Item&lt;int&gt;</span> — Medkit (heal amount in HP)</li>
+        <li class="note"><span class="type">Item&lt;float&gt;</span> — Ration (stamina restore percentage)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Container<T, MaxSize> -->
+  <div class="cls">
+    <div class="cls-head">
+      <h2 class="cls-name">Container&lt;T, MaxSize&gt; <span class="cls-tag tag-teal">Template</span></h2>
+      <p class="cls-sub">Bounded inventory container | non-type N for compile-time cap</p>
+    </div>
+    <div class="section">
+      <p class="section-title">Members</p>
+      <ul class="members">
+        <li class="priv">m_items : <span class="type">std::vector&lt;T&gt;</span></li>
+        <li class="note">MaxSize is template parameter — not stored as a member</li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Methods</p>
+      <ul class="members">
+        <li class="pub">Container() = <span class="kw">default</span></li>
+        <li class="pub">Add(<span class="type">const T&amp;</span> item) : <span class="ret">bool</span></li>
+        <li class="pub">Remove(<span class="type">size_t</span> index) : <span class="ret">bool</span></li>
+        <li class="pub">Find&lt;<span class="kw">Pred</span>&gt;(p) : <span class="ret">iterator</span></li>
+        <li class="pub">Find&lt;<span class="kw">Pred</span>&gt;(p) <span class="kw">const</span> : <span class="ret">const_iterator</span></li>
+        <li class="pub">Sort&lt;<span class="kw">Comp</span>&gt;(c) : <span class="ret">void</span></li>
+        <li class="pub">GetCount() <span class="kw">const</span> : <span class="ret">size_t</span></li>
+        <li class="pub">IsFull() <span class="kw">const</span> : <span class="ret">bool</span></li>
+        <li class="pub">IsEmpty() <span class="kw">const</span> : <span class="ret">bool</span></li>
+        <li class="pub">begin() / end() (×2: const + non-const)</li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Notes</p>
+      <ul class="members">
+        <li class="note">Wraps std::vector — cap is policy enforced in Add(), not by vector itself</li>
+        <li class="note">Find wraps std::find_if | Sort wraps std::sort</li>
+        <li class="note">Predicate / comparator templated for inlining (vs std::function)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- InventoryManager (STUB) -->
+  <div class="cls stub">
+    <div class="cls-head">
+      <h2 class="cls-name">InventoryManager <span class="cls-tag tag-coral">Stub</span></h2>
+      <p class="cls-sub">Manages multiple containers by category — design blocked on instructor reply</p>
+    </div>
+    <div class="section">
+      <p class="section-title">Members</p>
+      <ul class="members">
+        <li class="priv">m_categories : <span class="type">std::map&lt;std::string, ???&gt;</span><span class="stub-marker">value type TBD</span></li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Methods (signatures locked, bodies blocked)</p>
+      <ul class="members">
+        <li class="pub">AddCategory(<span class="type">const std::string&amp;</span> name, <span class="type">size_t</span> maxSize)</li>
+        <li class="pub">AddItem(category, item) : <span class="ret">bool</span></li>
+        <li class="pub">GetTotalValue() <span class="kw">const</span> : <span class="ret">int</span></li>
+        <li class="pub">GetTotalWeight() <span class="kw">const</span> : <span class="ret">float</span></li>
+        <li class="pub">FindItemsByValue(<span class="type">int</span> minValue) <span class="kw">const</span></li>
+        <li class="pub">SortCategory(name, comparator)</li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Open question</p>
+      <ul class="members">
+        <li class="note">How does runtime maxSize from AddCategory plug into Container's compile-time MaxSize?</li>
+        <li class="note">Heterogeneous T per category — variant, base class, or single shared T?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LootOnGround (STUB) -->
+  <div class="cls stub">
+    <div class="cls-head">
+      <h2 class="cls-name">LootOnGround <span class="cls-tag tag-coral">Stub</span></h2>
+      <p class="cls-sub">An item placed on a tile — type of "item" depends on heterogeneity choice</p>
+    </div>
+    <div class="section">
+      <p class="section-title">Members</p>
+      <ul class="members">
+        <li class="pub">tileX : <span class="type">int</span></li>
+        <li class="pub">tileY : <span class="type">int</span></li>
+        <li class="pub">item : <span class="type">???</span><span class="stub-marker">variant / base ptr / single T</span></li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Notes</p>
+      <ul class="members">
+        <li class="note">Stored as std::vector&lt;LootOnGround&gt; on Game</li>
+        <li class="note">No cap — count varies per scavenge run</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Game -->
+  <div class="cls">
+    <div class="cls-head">
+      <h2 class="cls-name">Game <span class="cls-tag tag-blue">View Layer</span></h2>
+      <p class="cls-sub">Owns all game state and rules | knows nothing about rendering</p>
+    </div>
+    <div class="section">
+      <p class="section-title">State</p>
+      <ul class="members">
+        <li class="priv">m_state : <span class="type">GameState</span> (enum)</li>
+        <li class="priv">m_playerX : <span class="type">int</span> (0..19)</li>
+        <li class="priv">m_playerY : <span class="type">int</span> (0..14)</li>
+        <li class="priv">m_timeRemaining : <span class="type">float</span> (seconds)</li>
+        <li class="priv">m_loot : <span class="type">std::vector&lt;LootOnGround&gt;</span><span class="stub-marker">type pending</span></li>
+        <li class="priv">m_playerBag : <span class="type">Container&lt;???, N&gt;</span><span class="stub-marker">type pending</span></li>
+        <li class="priv">m_stash : <span class="type">InventoryManager</span></li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Methods</p>
+      <ul class="members">
+        <li class="pub">Update(<span class="type">float</span> dt)</li>
+        <li class="pub">HandleInput()</li>
+        <li class="pub">TryPickup() / TryDrop() / TryDeposit()</li>
+        <li class="pub">GetPlayerX() / GetPlayerY() <span class="kw">const</span></li>
+        <li class="pub">GetTimeRemaining() <span class="kw">const</span> : <span class="ret">float</span></li>
+        <li class="pub">GetState() <span class="kw">const</span> : <span class="ret">GameState</span></li>
+        <li class="pub">GetLoot() <span class="kw">const</span> : <span class="ret">const std::vector&amp;</span></li>
+        <li class="pub">GetBag() <span class="kw">const</span> / GetStash() <span class="kw">const</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Renderer -->
+  <div class="cls">
+    <div class="cls-head">
+      <h2 class="cls-name">Renderer <span class="cls-tag tag-amber">View Layer</span></h2>
+      <p class="cls-sub">Reads Game and draws everything | owns textures and theme</p>
+    </div>
+    <div class="section">
+      <p class="section-title">Members</p>
+      <ul class="members">
+        <li class="priv">m_textures : <span class="type">std::map&lt;...,Texture2D&gt;</span></li>
+        <li class="priv">color &amp; letter mapping (constexpr / Theme.h)</li>
+      </ul>
+    </div>
+    <div class="section">
+      <p class="section-title">Methods</p>
+      <ul class="members">
+        <li class="pub">Renderer() — load textures from Tiles/</li>
+        <li class="pub">~Renderer() — unload textures</li>
+        <li class="pub">Draw(<span class="type">const Game&amp;</span>) <span class="kw">const</span></li>
+        <li class="note">Internal helpers (private):</li>
+        <li class="priv">DrawGrid(), DrawPlayer(), DrawLoot()</li>
+        <li class="priv">DrawStashZone(), DrawTimer()</li>
+        <li class="priv">DrawBagPanel(), DrawHUD(), DrawMenu()</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- GameState enum -->
+  <div class="cls full">
+    <div class="cls-head">
+      <h2 class="cls-name">enum class GameState <span class="cls-tag tag-gray">Enum</span></h2>
+      <p class="cls-sub">Top-level state machine for the game loop</p>
+    </div>
+    <div class="section">
+      <ul class="members">
+        <li class="pub">MainMenu &nbsp;|&nbsp; Running &nbsp;|&nbsp; Paused &nbsp;|&nbsp; GameOver</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="relationships">
+  <h2>Relationships</h2>
+  <ul>
+    <li><code>Container&lt;T,N&gt;</code> ◆→ holds many <code>T</code> internally (composition via <code>std::vector</code>)</li>
+    <li><code>InventoryManager</code> ◆→ holds many <code>Container</code> instances (composition via <code>std::map</code>) — exact storage type TBD</li>
+    <li><code>Game</code> ◆→ owns <code>m_playerBag</code> (a <code>Container</code>), <code>m_stash</code> (an <code>InventoryManager</code>), and <code>m_loot</code> (vector of <code>LootOnGround</code>)</li>
+    <li><code>Renderer</code> → reads <code>const Game&amp;</code> at draw time. Game has no reference to Renderer. One-way dependency.</li>
+    <li>No inheritance anywhere. If you find yourself adding it during the build, stop and ask why.</li>
+  </ul>
+</div>
+
+<div class="blocked">
+  <strong>Blocked on instructor reply:</strong>
+  Three types are stubbed pending the email: (1) <code>InventoryManager</code>'s map value type, (2) <code>LootOnGround</code>'s item field, (3) <code>Game::m_playerBag</code>'s template arguments. All three resolve together once the heterogeneity question is answered (variant vs. base class vs. single shared <code>T</code>). Until then, write a stub <code>InventoryManager</code> with empty method bodies so <code>Game</code> compiles.
+</div>
+
+<footer>
+  Scrap Run — VGP134 Assignment 1 | UML v1 | Generated during Phase 3 (System Design)
+</footer>
+
+</body>
+</html>
