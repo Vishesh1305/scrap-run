@@ -16,6 +16,8 @@ public:
     int GetTotalValue() const;
     float GetTotalWeight() const;
     
+    const std::map<std::string, AnyContainer>& GetCategories() const { return _categories; }
+    
     std::vector<AnyItem> FindItemsByValue(int minValue) const;
     
     template<typename Comp>

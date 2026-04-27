@@ -75,5 +75,7 @@ public:
 	{
 		return _items.cend();
 	}
+	
+	static constexpr size_t MaxCapacity() { return N; }
 };
 
