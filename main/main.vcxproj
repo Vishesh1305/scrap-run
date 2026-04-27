@@ -281,6 +281,7 @@
       <LinkCompiled>true</LinkCompiled>
       <AdditionalIncludeDirectories>;C:\vcpkg\installed\x64-windows\include</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\Stash.cpp" />
     <ClCompile Include="Inventory\InventoryManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -288,6 +289,8 @@
   <ItemGroup>
     <ClInclude Include="Core\Container.h" />
     <ClInclude Include="Core\Item.h" />
+    <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\LootOnGround.h" />
     <ClInclude Include="Game\Stash.h" />
     <ClInclude Include="Inventory\InventoryManager.h" />
     <ClInclude Include="Types.h" />
