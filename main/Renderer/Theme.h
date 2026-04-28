@@ -26,8 +26,8 @@ namespace Layout
 //Game Specific
 namespace GameSpecific
 {
-    constexpr float radiationTimer = 90.f;
-    constexpr float moveCooldown = 0.15f;
+    constexpr float radiationTimer = 60.f;
+    constexpr float moveCooldown = 0.25f;
     
     constexpr const char* weaponsCategory = "Weapons";
     constexpr const char* medkitsCategory = "Medkits";

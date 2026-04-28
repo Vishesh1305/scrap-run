@@ -33,6 +33,12 @@ void Game::Update(float deltaTime)
 void Game::HandleInput()
 {
     bool moved = false;
+    if (IsKeyPressed(KEY_R))
+    {
+        Restart();
+        return;
+    }
+    
     if (_state != GameState::Running) return;   
     if (_moveTimer > 0) return;
     
@@ -70,7 +76,7 @@ void Game::HandleInput()
         }
         else
         {
-            TryPickup();
+            if (!TryPickup()) TryDrop();
         }
     }
     
@@ -78,6 +84,7 @@ void Game::HandleInput()
     {
         _playerBag.SortAllByValue();
     }
+    
     
 }
 
@@ -110,6 +117,11 @@ bool Game::TryPickup()
 
 bool Game::TryDrop()
 {
+    if (auto removedItem = _playerBag.RemoveFirst())
+    {
+        _loot.push_back(LootOnGround{_playerX, _playerY, *removedItem});
+        return true;
+    }
     return false;
 }
 
@@ -122,6 +134,22 @@ bool Game::TryDeposit()
         _stash.Deposit(std::move(it));
     }
     return true;
+}
+
+void Game::Restart()
+{
+    _state = GameState::Running;
+    _playerX = Layout::gridWidth / 2;
+    _playerY = Layout::gridHeight / 2;
+    _timeRemaining = GameSpecific::radiationTimer;
+    _moveTimer = 0.f;
+    _loot.clear();
+    SpawnLoot();
+    _playerBag = InventoryManager{};
+    _playerBag.AddCategory(GameSpecific::weaponsCategory, WeaponContainer{});
+    _playerBag.AddCategory(GameSpecific::medkitsCategory, MedkitContainer{});
+    _playerBag.AddCategory(GameSpecific::rationsCategory, RationContainer{});
+    _stash = Stash{};
 }
 
 void Game::SpawnLoot()

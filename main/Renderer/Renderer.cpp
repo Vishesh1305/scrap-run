@@ -30,6 +30,9 @@ void Renderer::Draw(const Game& g) const
     DrawHUD(g);
     DrawControls();
     DrawBagPanel(g);
+    
+    if (g.GetState() == GameState::GameOver) DrawGameOver(g);
+    
     EndDrawing();
 }
 
@@ -115,4 +118,24 @@ void Renderer::DrawBagPanel(const Game& g) const
 void Renderer::DrawStashZone() const
 {
     DrawRectangle(Layout::stashTileX * Layout::tileSize, Layout::stashTileY * Layout::tileSize + Layout::topHUDHeight, Layout::tileSize, Layout::tileSize, Color{180, 100, 200, 255});
+}
+
+void Renderer::DrawGameOver(const Game& g) const
+{
+    DrawRectangle(0,0,Window::WINDOW_WIDTH, Window::WINDOW_HEIGHT, Fade(BLACK, 0.7f));
+    
+    const char* title = "GAME OVER";
+    int fontSize = 30;
+    int textWidth = MeasureText(title, fontSize);
+    int x = (Window::WINDOW_WIDTH - textWidth) / 2;
+    int y = Window::WINDOW_HEIGHT / 2;
+    
+    DrawText(title, x, y, fontSize, GRAY);
+    
+    int scoreFontSize = 20;
+    int scoreTextWidth = MeasureText(TextFormat("Final Score: %d", g.GetStash().GetTotalValue()), scoreFontSize);
+    int scoreX = (Window::WINDOW_WIDTH - scoreTextWidth) / 2;
+    int scoreY = y + fontSize + 25;
+    DrawText(TextFormat("Final Score: %d", g.GetStash().GetTotalValue()), scoreX, scoreY, scoreFontSize, GOLD);
+    
 }

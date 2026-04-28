@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <map>
 #include "../Types.h"
+#include <optional>
 
 class InventoryManager
 {
@@ -38,5 +39,6 @@ public:
      */
     
     void SortAllByValue();
+    std::optional<AnyItem> RemoveFirst();
     
 };

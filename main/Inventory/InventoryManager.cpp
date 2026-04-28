@@ -106,3 +106,22 @@ void InventoryManager::SortAllByValue()
     }
 }
 
+std::optional<AnyItem> InventoryManager::RemoveFirst()
+{
+    for (auto& [name, container] : _categories)
+    {
+        auto result = std::visit([](auto& c) -> std::optional<AnyItem>
+        {
+            if (!c.IsEmpty())
+            {
+                AnyItem item = *c.begin();
+                c.Remove(0);
+                return item;
+            }
+            return std::nullopt;
+        }, container);
+        if (result.has_value()) return result;
+    }
+    return std::nullopt;
+}
+

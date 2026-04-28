@@ -43,6 +43,8 @@ public:
     bool TryDrop();
     bool TryDeposit();
     
+    void Restart();
+    
 private:
     void SpawnLoot();
 };

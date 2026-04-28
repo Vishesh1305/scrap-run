@@ -24,4 +24,5 @@ private:
     void DrawControls() const;
     void DrawBagPanel(const Game& g) const;
     void DrawStashZone() const;
+    void DrawGameOver(const Game& g) const;
 };
