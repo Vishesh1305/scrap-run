@@ -23,4 +23,5 @@ private:
     void DrawHUD(const Game& g) const;
     void DrawControls() const;
     void DrawBagPanel(const Game& g) const;
+    void DrawStashZone() const;
 };

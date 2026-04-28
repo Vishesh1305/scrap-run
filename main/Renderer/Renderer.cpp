@@ -24,6 +24,7 @@ void Renderer::Draw(const Game& g) const
     ClearBackground(DARKBROWN);
     
     DrawGrid();
+    DrawStashZone();
     DrawLoot(g);
     DrawPlayer(g);
     DrawHUD(g);
@@ -109,4 +110,9 @@ void Renderer::DrawBagPanel(const Game& g) const
             y_cursor += 18;
         }, anyContainer);
     }
+}
+
+void Renderer::DrawStashZone() const
+{
+    DrawRectangle(Layout::stashTileX * Layout::tileSize, Layout::stashTileY * Layout::tileSize + Layout::topHUDHeight, Layout::tileSize, Layout::tileSize, Color{180, 100, 200, 255});
 }

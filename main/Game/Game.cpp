@@ -64,7 +64,19 @@ void Game::HandleInput()
     
     if (IsKeyPressed(KEY_E))
     {
-        TryPickup();
+        if ((_playerX == Layout::stashTileX) && (_playerY == Layout::stashTileY))
+        {
+            TryDeposit();
+        }
+        else
+        {
+            TryPickup();
+        }
+    }
+    
+    if (IsKeyPressed(KEY_TAB))
+    {
+        _playerBag.SortAllByValue();
     }
     
 }
@@ -103,7 +115,13 @@ bool Game::TryDrop()
 
 bool Game::TryDeposit()
 {
-    return false;
+    if (!((_playerX == Layout::stashTileX) && (_playerY == Layout::stashTileY))) return false;
+    std::vector<AnyItem> items = _playerBag.DrainAll();
+    for (auto& it : items)
+    {
+        _stash.Deposit(std::move(it));
+    }
+    return true;
 }
 
 void Game::SpawnLoot()

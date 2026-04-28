@@ -19,6 +19,7 @@ public:
     const std::map<std::string, AnyContainer>& GetCategories() const { return _categories; }
     
     std::vector<AnyItem> FindItemsByValue(int minValue) const;
+    std::vector<AnyItem> DrainAll();
     
     template<typename Comp>
     bool SortCategory(const std::string& name, Comp comparator)
@@ -35,4 +36,7 @@ public:
      * Note: the caller must pass a comparator matching the category's item type other it will throw a nasty error.
      * meaning, if you are calling this method for "medkits" then it will expect a comparator but if you pass in a weaponItem or a RationItem in it, it will throw. 
      */
+    
+    void SortAllByValue();
+    
 };

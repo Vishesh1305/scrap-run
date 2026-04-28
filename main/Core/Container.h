@@ -77,5 +77,7 @@ public:
 	}
 	
 	static constexpr size_t MaxCapacity() { return N; }
+	
+	void Clear() { _items.clear(); }
 };
 

@@ -19,6 +19,8 @@ namespace Layout
     constexpr int bottomHUDHeight = Window::WINDOW_HEIGHT - topHUDHeight - (gridHeight * tileSize);
     constexpr int rightPanelHeight = Window::WINDOW_HEIGHT - topHUDHeight - bottomHUDHeight;
     constexpr int rightPanelWidth = Window::WINDOW_WIDTH - (gridWidth * tileSize);
+    constexpr int stashTileX = 0;
+    constexpr int stashTileY = 0;
 }
 
 //Game Specific

@@ -80,3 +80,29 @@ std::vector<AnyItem> InventoryManager::FindItemsByValue(int minValue) const
     return result;
 }
 
+std::vector<AnyItem> InventoryManager::DrainAll()
+{
+    std::vector<AnyItem> result;
+    for (auto& [name, container] : _categories)
+    {
+        std::visit([&result](auto& c) -> void
+        {
+            for (auto& item : c)
+            {
+                result.push_back(std::move(item));
+            }
+            c.Clear();
+        }, container);
+    }
+    return result;
+}
+
+void InventoryManager::SortAllByValue()
+{
+    auto comparator = [](const auto& a, const auto& b) -> bool {return a.GetValue() > b.GetValue();};
+    for (const auto& [name, container] : _categories)
+    {
+        SortCategory(name, comparator);
+    }
+}
+
